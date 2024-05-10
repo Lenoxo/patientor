@@ -8,7 +8,7 @@ export default function PatientEntry({ date, description, diagnosisCodes }: Pati
     <div>
       <p><b>{date}</b>  {description}</p>
       <ul>
-        <li>{diagnosisCodes}</li>
+        {diagnosisCodes?.map((code, index) => <li key={index}>{code}</li>)}
       </ul>
     </div>
   )

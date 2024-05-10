@@ -29,7 +29,7 @@ export default function PatientDetail() {
       <p>{patient?.occupation}</p>
       <p>{patient?.ssn}</p>
       <h3>entries</h3>
-      {patient?.entries.map((entry) => <PatientEntry date={entry.date} description={entry.description} diagnosisCodes={entry.diagnosisCodes} />)}
+      {patient?.entries.map((entry, index) => <PatientEntry key={index} date={entry.date} description={entry.description} diagnosisCodes={entry.diagnosisCodes} />)}
     </>
   );
 }
