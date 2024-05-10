@@ -1,6 +1,9 @@
-import { Entry } from "../../types";
+import { BaseEntry } from "../../types";
 
-export default function PatientEntry({ date, description, diagnosisCodes }: Entry) {
+// I omit these properties because for now, they're not used in this component.
+type PatientBaseEntry = Omit<BaseEntry, "id" | "specialist">
+
+export default function PatientEntry({ date, description, diagnosisCodes }: PatientBaseEntry) {
   return (
     <div>
       <p><b>{date}</b>  {description}</p>
