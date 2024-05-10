@@ -1,15 +1,9 @@
-export interface Diagnose {
-  code: string;
-  name: string;
-  latin?: string;
-}
-
 export interface BaseEntry {
   id: string;
   description: string;
   date: string;
   specialist: string;
-  diagnosisCodes?: Array<Diagnose["code"]>;
+  diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
