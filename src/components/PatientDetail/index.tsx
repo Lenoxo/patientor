@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Patient } from "../../types";
 import patientService from "../../services/patients";
+import PatientEntry from "./PatientEntry";
 
 export default function PatientDetail() {
   const [patient, setPatient] = useState<Patient>();
@@ -27,6 +28,8 @@ export default function PatientDetail() {
       <p>{patient?.gender}</p>
       <p>{patient?.occupation}</p>
       <p>{patient?.ssn}</p>
+      <h3>entries</h3>
+      {patient?.entries.map((entry) => <PatientEntry date={entry.date} description={entry.description} diagnosisCodes={entry.diagnosisCodes} />)}
     </>
   );
 }
