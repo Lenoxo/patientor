@@ -8,4 +8,12 @@ async function getAllDiagnoses() {
   return data
 }
 
-export default { getAllDiagnoses }
+async function fetchDiagnoses(diagnosisCodes: string[]): Promise<Diagnosis[]> {
+  const data = await getAllDiagnoses();
+  if (!data) {
+    throw new Error("Unable to fetch diagnoses data");
+  }
+  return diagnosisCodes.map(code => data.find(diagnosis => diagnosis.code === code)!);
+}
+
+export default { fetchDiagnoses }
