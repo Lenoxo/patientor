@@ -1,15 +1,34 @@
-import { BaseEntry } from "../../types";
+import { useEffect, useState } from "react";
+import { BaseEntry, Diagnosis } from "../../types";
+import diagnosesService from "../../services/diagnoses";
 
-// I omit these properties because for now, they're not used in this component.
 type PatientBaseEntry = Omit<BaseEntry, "id" | "specialist">
 
 export default function PatientEntry({ date, description, diagnosisCodes }: PatientBaseEntry) {
+  const [patientDiagnosisInfo, setPatientDiagnosisInfo] = useState<Diagnosis[]>([]);
+
+  useEffect(() => {
+    async function fetchDiagnosisInfo() {
+      try {
+        if (!diagnosisCodes) return;
+        const diagnosisInfo = await diagnosesService.fetchDiagnoses(diagnosisCodes);
+        setPatientDiagnosisInfo(diagnosisInfo);
+      } catch (error) {
+        console.error("Error fetching diagnosis info:", error);
+      }
+    }
+
+    fetchDiagnosisInfo();
+  }, [diagnosisCodes]);
+
   return (
     <div>
-      <p><b>{date}</b>  {description}</p>
+      <p><b>{date}</b> {description}</p>
       <ul>
-        {diagnosisCodes?.map((code, index) => <li key={index}>{code}</li>)}
+        {patientDiagnosisInfo.map((diagnosis, index) => (
+          <li key={index}>{diagnosis.code}: {diagnosis.name}</li>
+        ))}
       </ul>
     </div>
-  )
+  );
 }
