@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import {
-  Diagnosis, Entry, HealthCheckEntry, HealthCheckRating, HospitalEntry, OccupationalHealthcareEntry
+  Diagnosis, Entry, HealthCheckRating, HospitalEntry, OccupationalHealthcareEntry
 } from "../../types";
 import diagnosesService from "../../services/diagnoses";
+// Define omit especial para uniones
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+// Define Entry sin la propiedad 'id' y "specialist"
+type EntryWithoutIdAndSpecialist = UnionOmit<Entry, 'id' | "specialist">;
 
-type PatientBaseEntry = Omit<Entry, "id" | "specialist">;
-
-export default function PatientEntry({ entryData }: { entryData: PatientBaseEntry }) {
+export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdAndSpecialist }) {
   const { date, description, diagnosisCodes } = entryData;
   const [patientDiagnosisInfo, setPatientDiagnosisInfo] = useState<Diagnosis[]>([]);
 
@@ -39,20 +41,20 @@ export default function PatientEntry({ entryData }: { entryData: PatientBaseEntr
   );
 }
 
-function renderAddionalEntryInfo(entryData: PatientBaseEntry) {
+function renderAddionalEntryInfo(entryData: EntryWithoutIdAndSpecialist) {
   switch (entryData.type) {
     case "Hospital":
-      const { discharge } = entryData as HospitalEntry
+      const { discharge } = entryData
       console.log(discharge)
       return <HospitalComponent discharge={discharge} />
     case "HealthCheck":
-      const { healthCheckRating } = entryData as HealthCheckEntry
+      const { healthCheckRating } = entryData
       return <HealthCheckComponent healthCheckRating={healthCheckRating} />
     case "OccupationalHealthcare":
-      const { employerName, sickLeave } = entryData as OccupationalHealthcareEntry
+      const { employerName, sickLeave } = entryData
       return <OccupationalHealthcareComponent employerName={employerName} sickLeave={sickLeave} />
     default:
-      assertNever(entryData.type as never)
+      assertNever(entryData.type)
   }
 }
 
