@@ -1,30 +1,10 @@
 import { useEffect, useState } from "react";
 import {
-  Diagnosis, Entry, HospitalEntry
+  Diagnosis, Entry, HealthCheckEntry, HealthCheckRating, HospitalEntry, OccupationalHealthcareEntry
 } from "../../types";
 import diagnosesService from "../../services/diagnoses";
 
 type PatientBaseEntry = Omit<Entry, "id" | "specialist">;
-
-function assertNever(value: never): never {
-  throw new Error(`This type is not expected in entries: ${value}`)
-}
-
-function renderAddionalEntryInfo(entryData: PatientBaseEntry) {
-  switch (entryData.type) {
-    case "Hospital":
-      const { discharge } = entryData as HospitalEntry
-      console.log(discharge)
-      return <HospitalComponent discharge={discharge} />
-    // case "HealthCheck":
-    //   return <HealthCheckComponent />
-    // case "OccupationalHealthcare":
-    //   return <OccupationalHealthcareComponent />
-    default:
-      assertNever(entryData.type as never)
-  }
-}
-
 
 export default function PatientEntry({ entryData }: { entryData: PatientBaseEntry }) {
   const { date, description, diagnosisCodes } = entryData;
@@ -45,19 +25,42 @@ export default function PatientEntry({ entryData }: { entryData: PatientBaseEntr
   }, [diagnosisCodes]);
 
   return (
-    <div>
+    <ul>
       <p><b>{date}</b> {description}</p>
       <h4>Diagnoses</h4>
       <ul>
         {patientDiagnosisInfo.map((diagnosis, index) => (
           <li key={index}>{diagnosis.code}: {diagnosis.name}</li>
         ))}
-        {renderAddionalEntryInfo(entryData)}
       </ul>
-    </div>
+      {renderAddionalEntryInfo(entryData)}
+    </ul>
 
   );
 }
+
+function renderAddionalEntryInfo(entryData: PatientBaseEntry) {
+  switch (entryData.type) {
+    case "Hospital":
+      const { discharge } = entryData as HospitalEntry
+      console.log(discharge)
+      return <HospitalComponent discharge={discharge} />
+    case "HealthCheck":
+      const { healthCheckRating } = entryData as HealthCheckEntry
+      return <HealthCheckComponent healthCheckRating={healthCheckRating} />
+    case "OccupationalHealthcare":
+      const { employerName, sickLeave } = entryData as OccupationalHealthcareEntry
+      return <OccupationalHealthcareComponent employerName={employerName} sickLeave={sickLeave} />
+    default:
+      assertNever(entryData.type as never)
+  }
+}
+
+function assertNever(value: never): never {
+  throw new Error(`This type is not expected in entries: ${value}`)
+}
+
+// Additional details components
 
 function HospitalComponent({ discharge }: { discharge: HospitalEntry["discharge"] }) {
   return (
@@ -68,5 +71,18 @@ function HospitalComponent({ discharge }: { discharge: HospitalEntry["discharge"
         <li><b>criteria</b> {discharge.criteria}</li>
       </ul>
     </>
+  )
+}
+
+function HealthCheckComponent({ healthCheckRating }: { healthCheckRating: HealthCheckRating }) {
+  return <p>HealthCheck Rating: {healthCheckRating}</p>
+}
+
+function OccupationalHealthcareComponent({ employerName, sickLeave }: { employerName: OccupationalHealthcareEntry["employerName"], sickLeave: OccupationalHealthcareEntry["sickLeave"] }) {
+  return (
+    <ul>
+      <li><b>Employer Name: </b>{employerName}</li>
+      {sickLeave && (<li><b>Employer Name: </b>{employerName}</li>)}
+    </ul>
   )
 }
