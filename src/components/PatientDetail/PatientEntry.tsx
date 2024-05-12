@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { BaseEntry, Diagnosis } from "../../types";
+import {
+  Diagnosis, Entry
+} from "../../types";
 import diagnosesService from "../../services/diagnoses";
 
-type PatientBaseEntry = Omit<BaseEntry, "id" | "specialist">
+type PatientBaseEntry = Omit<Entry, "id" | "specialist">;
 
-export default function PatientEntry({ date, description, diagnosisCodes }: PatientBaseEntry) {
+function assertNever(value: never): never {
+  throw new Error(`This type is not expected in entries: ${value}`)
+}
+
+export default function PatientEntry({ entryData }: { entryData: PatientBaseEntry }) {
+  const { date, description, diagnosisCodes, type } = entryData;
   const [patientDiagnosisInfo, setPatientDiagnosisInfo] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
@@ -21,6 +28,18 @@ export default function PatientEntry({ date, description, diagnosisCodes }: Pati
     fetchDiagnosisInfo();
   }, [diagnosisCodes]);
 
+  switch (type) {
+    case "Hospital":
+      return <HospitalComponent />
+    case "HealthCheck":
+      return <HealthCheckComponent />
+    case "OccupationalHealthcare":
+      return <OccupationalHealthcareComponent />
+    default:
+      assertNever(type)
+
+  }
+
   return (
     <div>
       <p><b>{date}</b> {description}</p>
@@ -32,3 +51,13 @@ export default function PatientEntry({ date, description, diagnosisCodes }: Pati
     </div>
   );
 }
+
+// function OccupationalHealthcareComponent({ discharge }) {
+//   return (
+//     <>
+//       <h4>Discharge:</h4>
+//       <p>{discharge.date}</p>
+//       <p>{discharge.criteria}</p>
+//     </>
+//   )
+// }
