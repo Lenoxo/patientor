@@ -16,7 +16,12 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
   return (
     <div>
       <form onSubmit={addEntry}>
-        <p>Hello there</p>
+        <TextField label="description" fullWidth />
+        <TextField label="date" fullWidth />
+        <TextField label="specialist" fullWidth />
+        <TextField label="diagnosis Codes" fullWidth />
+        <TextField label="type" fullWidth />
+        <TextField label="HealthCheck Rating" fullWidth />
       </form>
     </div>
   );
