@@ -46,7 +46,6 @@ function renderAddionalEntryInfo(entryData: EntryWithoutIdAndSpecialist) {
   switch (entryData.type) {
     case 'Hospital':
       const { discharge } = entryData;
-      console.log(discharge);
       return <HospitalComponent discharge={discharge} />;
     case 'HealthCheck':
       const { healthCheckRating } = entryData;
