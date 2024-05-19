@@ -1,5 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
-import { Patient } from '../../types';
+import { HealthCheckEntryValues, Patient } from '../../types';
 import patientService from '../../services/patients';
 import PatientEntry from './PatientEntry';
 import AddEntryModal from '../AddEntryModal';
@@ -33,8 +33,8 @@ export default function PatientDetail() {
     getPatientData();
   }, [id]);
 
-  function submitNewEntry(values: object) {
-    return `Added entry with these values: ${values}`;
+  function submitNewEntry(values: HealthCheckEntryValues) {
+    console.log(`Added new entry: ${values}`);
   }
 
   return (
@@ -45,7 +45,7 @@ export default function PatientDetail() {
       <p>{patient?.ssn}</p>
       <AddEntryModal modalOpen={modalOpen} onSubmit={submitNewEntry} error={error} onClose={closeModal} />
       <Button variant="contained" onClick={() => openModal()}>
-        Add New Patient
+        Add New Entry
       </Button>
       <h3>entries</h3>
       {patient?.entries.map((entry, index) => <PatientEntry key={index} entryData={entry} />)}

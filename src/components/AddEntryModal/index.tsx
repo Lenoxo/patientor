@@ -13,7 +13,7 @@ interface Props {
 function AddEntryModal({ modalOpen, onClose, onSubmit, error }: Props) {
   return (
     <Dialog fullWidth={true} open={modalOpen} onClose={() => onClose()}>
-      <DialogTitle>Add a new patient</DialogTitle>
+      <DialogTitle>Add a new entry</DialogTitle>
       <Divider />
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
