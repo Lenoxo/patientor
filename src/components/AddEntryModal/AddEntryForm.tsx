@@ -1,5 +1,7 @@
 import { SyntheticEvent } from 'react';
-import { TextField, InputLabel, MenuItem, Select, Grid, Button, SelectChangeEvent } from '@mui/material';
+// TODO: Remove this comment when you implement all these components in the last phase.
+// import { TextField, InputLabel, MenuItem, Select, Grid, Button, SelectChangeEvent } from '@mui/material';
+import { TextField, Grid, Button } from '@mui/material';
 import { HealthCheckEntryValues } from '../../types';
 
 interface Props {
@@ -17,11 +19,12 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
       description: form.description.value,
       date: form.date.value,
       specialist: form.specialist.value,
-      diagnosisCodes: form.diagnosisCodes.value,
-      healthCheckRating: form.healthCheckRating.value
+      type: 'HealthCheck',
+      diagnosisCodes: [form.diagnosisCodes.value],
+      healthCheckRating: parseInt(form.healthCheckRating.value)
     };
 
-    onSubmit(newEntry); // Object with new entry data, this assertion will be removed in later phases
+    onSubmit(newEntry);
   }
 
   return (
@@ -39,7 +42,7 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
             </Button>
           </Grid>
           <Grid item>
-            <Button color="primary" variant="contained" style={{ float: 'right' }} type="submit" onClick={onCancel}>
+            <Button color="primary" variant="contained" style={{ float: 'right' }} type="submit">
               Save
             </Button>
           </Grid>

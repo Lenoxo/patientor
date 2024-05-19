@@ -8,6 +8,7 @@ async function getAllDiagnoses() {
   return data;
 }
 
+// TODO: Rename this function to findDiagnosisDataForPatient
 async function fetchDiagnoses(diagnosisCodes: string[]): Promise<Diagnosis[]> {
   const data = await getAllDiagnoses();
   if (!data) {

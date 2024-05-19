@@ -1,9 +1,10 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HealthCheckEntryValues, Patient } from '../../types';
 import patientService from '../../services/patients';
 import PatientEntry from './PatientEntry';
 import AddEntryModal from '../AddEntryModal';
 import { Button } from '@mui/material';
+import axios from 'axios';
 
 export default function PatientDetail() {
   const [patient, setPatient] = useState<Patient>();
@@ -33,8 +34,25 @@ export default function PatientDetail() {
     getPatientData();
   }, [id]);
 
-  function submitNewEntry(values: HealthCheckEntryValues) {
-    console.log(`Added new entry: ${values}`);
+  async function submitNewEntry(values: HealthCheckEntryValues) {
+    try {
+      const updatedPatient = await patientService.createEntry(values, id);
+      setPatient(updatedPatient);
+      setModalOpen(false);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === 'string') {
+          const message = e.response.data.replace('Something went wrong. Error: ', '');
+          console.error(message);
+          setError(message);
+        } else {
+          setError('Unrecognized axios error');
+        }
+      } else {
+        console.error('Unknown error', e);
+        setError('Unknown error');
+      }
+    }
   }
 
   return (
