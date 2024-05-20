@@ -14,7 +14,7 @@ export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdA
     async function fetchDiagnosisInfo() {
       try {
         if (!diagnosisCodes) return;
-        const diagnosisInfo = await diagnosesService.fetchDiagnoses(diagnosisCodes);
+        const diagnosisInfo = await diagnosesService.findDiagnosisDataForPatient(diagnosisCodes);
         setPatientDiagnosisInfo(diagnosisInfo);
       } catch (error) {
         console.error('Error fetching diagnosis info:', error);

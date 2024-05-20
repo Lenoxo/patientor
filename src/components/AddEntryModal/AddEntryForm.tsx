@@ -1,7 +1,5 @@
-import { SyntheticEvent } from 'react';
-// TODO: Remove this comment when you implement all these components in the last phase.
-// import { TextField, InputLabel, MenuItem, Select, Grid, Button, SelectChangeEvent } from '@mui/material';
-import { TextField, Grid, Button } from '@mui/material';
+import { SyntheticEvent, useState } from 'react';
+import { TextField, Grid, Button, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
 import { HealthCheckEntryValues } from '../../types';
 
 interface Props {
@@ -11,6 +9,22 @@ interface Props {
 
 // TODO: allow the user to handle the other two types of entries
 function AddEntryForm({ onCancel, onSubmit }: Props) {
+  const [entryType, setEntryType] = useState('HealthCheck');
+
+  const availableEntryTypes: string[] = ['HealthCheck', 'OccupationalHealthcare', 'Hospital'];
+
+  function handleEntryTypeChange(event: SelectChangeEvent<string>) {
+    event.preventDefault();
+    if (typeof event.target.value === 'string') {
+      const value = event.target.value;
+      const isValidValue = availableEntryTypes.some((entryType) => entryType === value);
+
+      if (isValidValue) {
+        setEntryType(value);
+      }
+    }
+  }
+
   function addEntry(event: SyntheticEvent) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -30,6 +44,21 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
   return (
     <div>
       <form onSubmit={addEntry}>
+        <InputLabel style={{ marginTop: 20 }}>Entry Type</InputLabel>
+        <Select
+          label="Entry Type"
+          fullWidth
+          required={true}
+          defaultValue={entryType}
+          value={entryType}
+          onChange={handleEntryTypeChange}
+        >
+          {availableEntryTypes.map((entryType) => (
+            <MenuItem key={entryType} value={entryType}>
+              {entryType}
+            </MenuItem>
+          ))}
+        </Select>
         <TextField label="description" id="description" fullWidth required={true} />
         <TextField label="date" id="date" fullWidth required={true} />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
