@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from 'react';
 import { TextField, Grid, Button, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
-import { HealthCheckEntryValues } from '../../types';
+import { BaseEntry, HealthCheckEntryValues } from '../../types';
 
 interface Props {
   onCancel: () => void;
@@ -17,7 +17,7 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
     event.preventDefault();
     if (typeof event.target.value === 'string') {
       const value = event.target.value;
-      const isValidValue = availableEntryTypes.some((entryType) => entryType === value);
+      const isValidValue = availableEntryTypes.some((type) => type === value);
 
       if (isValidValue) {
         setEntryType(value);
@@ -28,15 +28,40 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
   function addEntry(event: SyntheticEvent) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
+    let newEntry;
 
-    const newEntry: HealthCheckEntryValues = {
+    const commonValues: BaseEntry = {
       description: form.description.value,
       date: form.date.value,
       specialist: form.specialist.value,
-      type: 'HealthCheck',
-      diagnosisCodes: [form.diagnosisCodes.value],
-      healthCheckRating: parseInt(form.healthCheckRating.value)
+      diagnosisCodes: [form.diagnosisCodes.value]
     };
+
+    switch (entryType) {
+      case 'HealthCheck':
+        newEntry = {
+          ...commonValues,
+          type: entryType,
+          healthCheckRating: parseInt(form.healthCheckRating.value)
+        };
+        break;
+
+      case 'Hospital':
+        newEntry = {
+          ...commonValues,
+          type: entryType,
+          discharge: {
+            date: form['discharge-date'].value,
+            criteria: form['discharge-criteria'].value
+          }
+        };
+
+        console.log(newEntry);
+        break;
+
+      default:
+        break;
+    }
 
     onSubmit(newEntry);
   }
@@ -45,17 +70,10 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
     <div>
       <form onSubmit={addEntry}>
         <InputLabel style={{ marginTop: 20 }}>Entry Type</InputLabel>
-        <Select
-          label="Entry Type"
-          fullWidth
-          required={true}
-          defaultValue={entryType}
-          value={entryType}
-          onChange={handleEntryTypeChange}
-        >
-          {availableEntryTypes.map((entryType) => (
-            <MenuItem key={entryType} value={entryType}>
-              {entryType}
+        <Select label="Entry Type" fullWidth required={true} value={entryType} onChange={handleEntryTypeChange}>
+          {availableEntryTypes.map((type) => (
+            <MenuItem key={type} value={type}>
+              {type}
             </MenuItem>
           ))}
         </Select>
@@ -63,7 +81,16 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
         <TextField label="date" id="date" fullWidth required={true} />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
         <TextField label="diagnosis Codes" id="diagnosisCodes" fullWidth />
-        <TextField label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
+        {entryType === 'HealthCheck' && (
+          <TextField label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
+        )}
+
+        {entryType === 'Hospital' && (
+          <>
+            <TextField label="discharge date" id="discharge-date" fullWidth required={true} />
+            <TextField label="discharge criteria" id="discharge-criteria" fullWidth required={true} />
+          </>
+        )}
         <Grid>
           <Grid item marginTop={4}>
             <Button color="secondary" variant="contained" style={{ float: 'left' }} type="button" onClick={onCancel}>
