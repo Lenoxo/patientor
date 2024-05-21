@@ -8,8 +8,7 @@ async function getAllDiagnoses() {
   return data;
 }
 
-// TODO: Rename this function to findDiagnosisDataForPatient
-async function fetchDiagnoses(diagnosisCodes: string[]): Promise<Diagnosis[]> {
+async function findDiagnosisDataForPatient(diagnosisCodes: string[]): Promise<Diagnosis[]> {
   const data = await getAllDiagnoses();
   if (!data) {
     throw new Error('Unable to fetch diagnoses data');
@@ -17,4 +16,4 @@ async function fetchDiagnoses(diagnosisCodes: string[]): Promise<Diagnosis[]> {
   return diagnosisCodes.map((code) => data.find((diagnosis) => diagnosis.code === code)!);
 }
 
-export default { fetchDiagnoses };
+export default { findDiagnosisDataForPatient };
