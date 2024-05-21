@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Diagnosis, Entry, HealthCheckRating, HospitalEntry, OccupationalHealthcareEntry } from '../../types';
+import {
+  Diagnosis,
+  EntryWithoutIdAndSpecialist,
+  HealthCheckRating,
+  HospitalEntry,
+  OccupationalHealthcareEntry
+} from '../../types';
 import diagnosesService from '../../services/diagnoses';
-// Define omit especial para uniones
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
-// Define Entry sin la propiedad 'id' y "specialist"
-type EntryWithoutIdAndSpecialist = UnionOmit<Entry, 'id' | 'specialist'>;
 
 export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdAndSpecialist }) {
   const { date, description, diagnosisCodes } = entryData;
@@ -98,10 +100,17 @@ function OccupationalHealthcareComponent({
         {employerName}
       </li>
       {sickLeave && (
-        <li>
-          <b>Employer Name: </b>
-          {employerName}
-        </li>
+        <ul>
+          <h4>Sick Leave</h4>
+          <li>
+            <b>start date: </b>
+            {sickLeave.startDate}
+          </li>
+          <li>
+            <b>end date: </b>
+            {sickLeave.endDate}
+          </li>
+        </ul>
       )}
     </ul>
   );

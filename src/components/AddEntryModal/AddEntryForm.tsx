@@ -1,13 +1,12 @@
 import { SyntheticEvent, useState } from 'react';
 import { TextField, Grid, Button, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
-import { BaseEntry, HealthCheckEntryValues } from '../../types';
+import { BaseEntryWithoutId, NewEntry } from '../../types';
 
 interface Props {
   onCancel: () => void;
-  onSubmit: (values: HealthCheckEntryValues) => void;
+  onSubmit: (values: NewEntry) => void;
 }
 
-// TODO: allow the user to handle the other two types of entries
 function AddEntryForm({ onCancel, onSubmit }: Props) {
   const [entryType, setEntryType] = useState('HealthCheck');
 
@@ -30,7 +29,7 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
     const form = event.target as HTMLFormElement;
     let newEntry;
 
-    const commonValues: BaseEntry = {
+    const commonValues: BaseEntryWithoutId = {
       description: form.description.value,
       date: form.date.value,
       specialist: form.specialist.value,
@@ -44,26 +43,45 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
           type: entryType,
           healthCheckRating: parseInt(form.healthCheckRating.value)
         };
-        break;
+        return onSubmit(newEntry);
 
       case 'Hospital':
         newEntry = {
           ...commonValues,
           type: entryType,
           discharge: {
-            date: form['discharge-date'].value,
-            criteria: form['discharge-criteria'].value
+            date: form.dischargeDate.value,
+            criteria: form.dischargeCriteria.value
           }
         };
+        return onSubmit(newEntry);
 
-        console.log(newEntry);
-        break;
+      case 'OccupationalHealthcare':
+        const startDate = form.startDate.value;
+        const endDate = form.endDate.value;
+        if (startDate && endDate) {
+          newEntry = {
+            ...commonValues,
+            type: entryType,
+            employerName: form.employerName.value,
+            sickLeave: {
+              startDate,
+              endDate
+            }
+          };
+          return onSubmit(newEntry);
+        } else {
+          newEntry = {
+            ...commonValues,
+            type: entryType,
+            employerName: form.employerName.value
+          };
+          return onSubmit(newEntry);
+        }
 
       default:
-        break;
+        throw new Error(`Invalid entryType: ${entryType}`);
     }
-
-    onSubmit(newEntry);
   }
 
   return (
@@ -81,16 +99,27 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
         <TextField label="date" id="date" fullWidth required={true} />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
         <TextField label="diagnosis Codes" id="diagnosisCodes" fullWidth />
+
         {entryType === 'HealthCheck' && (
           <TextField label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
         )}
 
         {entryType === 'Hospital' && (
           <>
-            <TextField label="discharge date" id="discharge-date" fullWidth required={true} />
-            <TextField label="discharge criteria" id="discharge-criteria" fullWidth required={true} />
+            <TextField label="discharge date" id="dischargeDate" fullWidth required={true} />
+            <TextField label="discharge criteria" id="dischargeCriteria" fullWidth required={true} />
           </>
         )}
+
+        {entryType === 'OccupationalHealthcare' && (
+          <>
+            <TextField label="employer name" id="employerName" fullWidth required={true} />
+            <InputLabel style={{ marginTop: 10 }}>Sick Leave (opt)</InputLabel>
+            <TextField label="start date" id="startDate" fullWidth />
+            <TextField label="end date" id="endDate" fullWidth />
+          </>
+        )}
+
         <Grid>
           <Grid item marginTop={4}>
             <Button color="secondary" variant="contained" style={{ float: 'left' }} type="button" onClick={onCancel}>

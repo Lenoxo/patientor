@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HealthCheckEntryValues, Patient } from '../../types';
+import { NewEntry, Patient } from '../../types';
 import patientService from '../../services/patients';
 import PatientEntry from './PatientEntry';
 import AddEntryModal from '../AddEntryModal';
@@ -34,7 +34,7 @@ export default function PatientDetail() {
     getPatientData();
   }, [id]);
 
-  async function submitNewEntry(values: HealthCheckEntryValues) {
+  async function submitNewEntry(values: NewEntry) {
     try {
       const updatedPatient = await patientService.createEntry(values, id);
       setPatient(updatedPatient);
