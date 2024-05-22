@@ -1,6 +1,8 @@
 import { SyntheticEvent, useState } from 'react';
 import { TextField, Grid, Button, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
 import { BaseEntryWithoutId, NewEntry } from '../../types';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface Props {
   onCancel: () => void;
@@ -8,7 +10,8 @@ interface Props {
 }
 
 function AddEntryForm({ onCancel, onSubmit }: Props) {
-  const [entryType, setEntryType] = useState('HealthCheck');
+  const [entryType, setEntryType] = useState<string>('HealthCheck');
+  const [date, setDate] = useState<Dayjs>(dayjs());
 
   const availableEntryTypes: string[] = ['HealthCheck', 'OccupationalHealthcare', 'Hospital'];
 
@@ -31,7 +34,7 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
 
     const commonValues: BaseEntryWithoutId = {
       description: form.description.value,
-      date: form.date.value,
+      date: dayjs(date).format('YYYY-MM-DD'),
       specialist: form.specialist.value,
       diagnosisCodes: [form.diagnosisCodes.value]
     };
@@ -96,7 +99,12 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
           ))}
         </Select>
         <TextField label="description" id="description" fullWidth required={true} />
-        <TextField label="date" id="date" fullWidth required={true} />
+        <DatePicker
+          slotProps={{ textField: { fullWidth: true } }}
+          value={date}
+          format="MM - DD - YYYY"
+          onChange={(newDate) => newDate && setDate(newDate)}
+        />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
         <TextField label="diagnosis Codes" id="diagnosisCodes" fullWidth />
 
