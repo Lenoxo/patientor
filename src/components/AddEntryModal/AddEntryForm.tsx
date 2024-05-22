@@ -133,7 +133,7 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
         </Select>
 
         {entryType === 'HealthCheck' && (
-          <TextField label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
+          <TextField type="number" label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
         )}
 
         {entryType === 'Hospital' && (
