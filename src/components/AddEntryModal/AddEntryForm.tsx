@@ -13,6 +13,7 @@ interface Props {
 function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
   const [entryType, setEntryType] = useState<string>('HealthCheck');
   const [date, setDate] = useState<Dayjs>(dayjs());
+  const [dischargeDate, setDischargeDate] = useState<Dayjs>(dayjs());
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const availableEntryTypes: string[] = ['HealthCheck', 'OccupationalHealthcare', 'Hospital'];
@@ -62,7 +63,7 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
           ...commonValues,
           type: entryType,
           discharge: {
-            date: form.dischargeDate.value,
+            date: dayjs(dischargeDate).format('YYYY-MM-DD'),
             criteria: form.dischargeCriteria.value
           }
         };
@@ -109,7 +110,7 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
         </Select>
         <TextField label="description" id="description" fullWidth required={true} />
         <DatePicker
-          slotProps={{ textField: { fullWidth: true } }}
+          slotProps={{ textField: { fullWidth: true, label: 'Date', required: true } }}
           format="MM - DD - YYYY"
           onChange={(newDate) => newDate && setDate(newDate)}
         />
@@ -138,7 +139,11 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
 
         {entryType === 'Hospital' && (
           <>
-            <TextField label="discharge date" id="dischargeDate" fullWidth required={true} />
+            <DatePicker
+              slotProps={{ textField: { fullWidth: true, label: 'Discharge Date', required: true } }}
+              format="MM - DD - YYYY"
+              onChange={(newDate) => newDate && setDischargeDate(newDate)}
+            />
             <TextField label="discharge criteria" id="dischargeCriteria" fullWidth required={true} />
           </>
         )}
