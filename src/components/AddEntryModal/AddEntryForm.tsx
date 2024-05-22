@@ -14,6 +14,8 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
   const [entryType, setEntryType] = useState<string>('HealthCheck');
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [dischargeDate, setDischargeDate] = useState<Dayjs>(dayjs());
+  const [sickLeaveStartDate, setSickLeaveStartDate] = useState<Dayjs | null>(null);
+  const [sickLeaveEndDate, setSickLeaveEndDate] = useState<Dayjs | null>(null);
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const availableEntryTypes: string[] = ['HealthCheck', 'OccupationalHealthcare', 'Hospital'];
@@ -70,16 +72,14 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
         return onSubmit(newEntry);
 
       case 'OccupationalHealthcare':
-        const startDate = form.startDate.value;
-        const endDate = form.endDate.value;
-        if (startDate && endDate) {
+        if (sickLeaveStartDate && sickLeaveEndDate) {
           newEntry = {
             ...commonValues,
             type: entryType,
             employerName: form.employerName.value,
             sickLeave: {
-              startDate,
-              endDate
+              startDate: dayjs(sickLeaveStartDate).format('YYYY-MM-DD'),
+              endDate: dayjs(sickLeaveEndDate).format('YYYY-MM-DD')
             }
           };
           return onSubmit(newEntry);
@@ -151,9 +151,17 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
         {entryType === 'OccupationalHealthcare' && (
           <>
             <TextField label="employer name" id="employerName" fullWidth required={true} />
-            <InputLabel style={{ marginTop: 10 }}>Sick Leave (opt)</InputLabel>
-            <TextField label="start date" id="startDate" fullWidth />
-            <TextField label="end date" id="endDate" fullWidth />
+            <InputLabel style={{ marginTop: 10 }}>Sick Leave (optional)</InputLabel>
+            <DatePicker
+              slotProps={{ textField: { fullWidth: true, label: 'Start Date' } }}
+              format="MM - DD - YYYY"
+              onChange={(newDate) => newDate && setSickLeaveStartDate(newDate)}
+            />
+            <DatePicker
+              slotProps={{ textField: { fullWidth: true, label: 'End Date' } }}
+              format="MM - DD - YYYY"
+              onChange={(newDate) => newDate && setSickLeaveEndDate(newDate)}
+            />
           </>
         )}
 
