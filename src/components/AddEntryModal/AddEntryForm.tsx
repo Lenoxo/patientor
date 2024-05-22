@@ -1,17 +1,19 @@
 import { SyntheticEvent, useState } from 'react';
 import { TextField, Grid, Button, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
-import { BaseEntryWithoutId, NewEntry } from '../../types';
+import { BaseEntryWithoutId, Diagnosis, NewEntry } from '../../types';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 interface Props {
   onCancel: () => void;
   onSubmit: (values: NewEntry) => void;
+  availableDiagnoses: Diagnosis[];
 }
 
-function AddEntryForm({ onCancel, onSubmit }: Props) {
+function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
   const [entryType, setEntryType] = useState<string>('HealthCheck');
   const [date, setDate] = useState<Dayjs>(dayjs());
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const availableEntryTypes: string[] = ['HealthCheck', 'OccupationalHealthcare', 'Hospital'];
 
@@ -27,6 +29,13 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
     }
   }
 
+  function handleDiagnosisCodesChange(event: SelectChangeEvent<string[]>) {
+    event.preventDefault();
+    const value = event.target.value;
+    // Here the value really is an Array, but when you apply typeof to an array, it returns 'object'
+    typeof value === 'object' && setDiagnosisCodes(value);
+  }
+
   function addEntry(event: SyntheticEvent) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -36,7 +45,7 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
       description: form.description.value,
       date: dayjs(date).format('YYYY-MM-DD'),
       specialist: form.specialist.value,
-      diagnosisCodes: [form.diagnosisCodes.value]
+      diagnosisCodes
     };
 
     switch (entryType) {
@@ -101,12 +110,27 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
         <TextField label="description" id="description" fullWidth required={true} />
         <DatePicker
           slotProps={{ textField: { fullWidth: true } }}
-          value={date}
           format="MM - DD - YYYY"
           onChange={(newDate) => newDate && setDate(newDate)}
         />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
-        <TextField label="diagnosis Codes" id="diagnosisCodes" fullWidth />
+        <InputLabel style={{ marginTop: 10 }}>Diagnosis Codes (optional)</InputLabel>
+        <Select
+          id="diagnosisCodes"
+          label="Diagnosis Codes (optional)"
+          fullWidth
+          multiple={true}
+          value={diagnosisCodes}
+          onChange={handleDiagnosisCodesChange}
+        >
+          {availableDiagnoses?.map((diagnosis) => {
+            return (
+              <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                {diagnosis.code}
+              </MenuItem>
+            );
+          })}
+        </Select>
 
         {entryType === 'HealthCheck' && (
           <TextField label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
