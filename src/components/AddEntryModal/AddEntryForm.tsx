@@ -1,14 +1,22 @@
 import { SyntheticEvent, useState } from 'react';
 import { TextField, Grid, Button, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
-import { BaseEntryWithoutId, NewEntry } from '../../types';
+import { BaseEntryWithoutId, Diagnosis, NewEntry } from '../../types';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface Props {
   onCancel: () => void;
   onSubmit: (values: NewEntry) => void;
+  availableDiagnoses: Diagnosis[];
 }
 
-function AddEntryForm({ onCancel, onSubmit }: Props) {
-  const [entryType, setEntryType] = useState('HealthCheck');
+function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
+  const [entryType, setEntryType] = useState<string>('HealthCheck');
+  const [date, setDate] = useState<Dayjs>(dayjs());
+  const [dischargeDate, setDischargeDate] = useState<Dayjs>(dayjs());
+  const [sickLeaveStartDate, setSickLeaveStartDate] = useState<Dayjs | null>(null);
+  const [sickLeaveEndDate, setSickLeaveEndDate] = useState<Dayjs | null>(null);
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const availableEntryTypes: string[] = ['HealthCheck', 'OccupationalHealthcare', 'Hospital'];
 
@@ -24,6 +32,13 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
     }
   }
 
+  function handleDiagnosisCodesChange(event: SelectChangeEvent<string[]>) {
+    event.preventDefault();
+    const value = event.target.value;
+    // Here the value really is an Array, but when you apply typeof to an array, it returns 'object'
+    typeof value === 'object' && setDiagnosisCodes(value);
+  }
+
   function addEntry(event: SyntheticEvent) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -31,9 +46,9 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
 
     const commonValues: BaseEntryWithoutId = {
       description: form.description.value,
-      date: form.date.value,
+      date: dayjs(date).format('YYYY-MM-DD'),
       specialist: form.specialist.value,
-      diagnosisCodes: [form.diagnosisCodes.value]
+      diagnosisCodes
     };
 
     switch (entryType) {
@@ -50,23 +65,21 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
           ...commonValues,
           type: entryType,
           discharge: {
-            date: form.dischargeDate.value,
+            date: dayjs(dischargeDate).format('YYYY-MM-DD'),
             criteria: form.dischargeCriteria.value
           }
         };
         return onSubmit(newEntry);
 
       case 'OccupationalHealthcare':
-        const startDate = form.startDate.value;
-        const endDate = form.endDate.value;
-        if (startDate && endDate) {
+        if (sickLeaveStartDate && sickLeaveEndDate) {
           newEntry = {
             ...commonValues,
             type: entryType,
             employerName: form.employerName.value,
             sickLeave: {
-              startDate,
-              endDate
+              startDate: dayjs(sickLeaveStartDate).format('YYYY-MM-DD'),
+              endDate: dayjs(sickLeaveEndDate).format('YYYY-MM-DD')
             }
           };
           return onSubmit(newEntry);
@@ -96,17 +109,41 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
           ))}
         </Select>
         <TextField label="description" id="description" fullWidth required={true} />
-        <TextField label="date" id="date" fullWidth required={true} />
+        <DatePicker
+          slotProps={{ textField: { fullWidth: true, label: 'Date', required: true } }}
+          format="MM - DD - YYYY"
+          onChange={(newDate) => newDate && setDate(newDate)}
+        />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
-        <TextField label="diagnosis Codes" id="diagnosisCodes" fullWidth />
+        <InputLabel style={{ marginTop: 10 }}>Diagnosis Codes (optional)</InputLabel>
+        <Select
+          id="diagnosisCodes"
+          label="Diagnosis Codes (optional)"
+          fullWidth
+          multiple={true}
+          value={diagnosisCodes}
+          onChange={handleDiagnosisCodesChange}
+        >
+          {availableDiagnoses?.map((diagnosis) => {
+            return (
+              <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                {diagnosis.code}
+              </MenuItem>
+            );
+          })}
+        </Select>
 
         {entryType === 'HealthCheck' && (
-          <TextField label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
+          <TextField type="number" label="HealthCheck Rating" id="healthCheckRating" fullWidth required={true} />
         )}
 
         {entryType === 'Hospital' && (
           <>
-            <TextField label="discharge date" id="dischargeDate" fullWidth required={true} />
+            <DatePicker
+              slotProps={{ textField: { fullWidth: true, label: 'Discharge Date', required: true } }}
+              format="MM - DD - YYYY"
+              onChange={(newDate) => newDate && setDischargeDate(newDate)}
+            />
             <TextField label="discharge criteria" id="dischargeCriteria" fullWidth required={true} />
           </>
         )}
@@ -114,9 +151,17 @@ function AddEntryForm({ onCancel, onSubmit }: Props) {
         {entryType === 'OccupationalHealthcare' && (
           <>
             <TextField label="employer name" id="employerName" fullWidth required={true} />
-            <InputLabel style={{ marginTop: 10 }}>Sick Leave (opt)</InputLabel>
-            <TextField label="start date" id="startDate" fullWidth />
-            <TextField label="end date" id="endDate" fullWidth />
+            <InputLabel style={{ marginTop: 10 }}>Sick Leave (optional)</InputLabel>
+            <DatePicker
+              slotProps={{ textField: { fullWidth: true, label: 'Start Date' } }}
+              format="MM - DD - YYYY"
+              onChange={(newDate) => newDate && setSickLeaveStartDate(newDate)}
+            />
+            <DatePicker
+              slotProps={{ textField: { fullWidth: true, label: 'End Date' } }}
+              format="MM - DD - YYYY"
+              onChange={(newDate) => newDate && setSickLeaveEndDate(newDate)}
+            />
           </>
         )}
 

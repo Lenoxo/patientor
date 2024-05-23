@@ -16,4 +16,4 @@ async function findDiagnosisDataForPatient(diagnosisCodes: string[]): Promise<Di
   return diagnosisCodes.map((code) => data.find((diagnosis) => diagnosis.code === code)!);
 }
 
-export default { findDiagnosisDataForPatient };
+export default { findDiagnosisDataForPatient, getAllDiagnoses };
