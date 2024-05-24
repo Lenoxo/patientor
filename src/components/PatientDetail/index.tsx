@@ -3,10 +3,18 @@ import { NewEntry, Patient } from '../../types';
 import patientService from '../../services/patients';
 import PatientEntry from './PatientEntry';
 import AddEntryModal from '../AddEntryModal';
-import { Button, Typography } from '@mui/material';
-import axios from 'axios';
-import { FemaleOutlined, MaleOutlined } from '@mui/icons-material';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import MaleOutlined from '@mui/icons-material/MaleOutlined';
+import FemaleOutlined from '@mui/icons-material/FemaleOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import axios from 'axios';
+
 export default function PatientDetail() {
   const [patient, setPatient] = useState<Patient>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -61,12 +69,26 @@ export default function PatientDetail() {
       <Typography variant="h5" style={{ marginTop: '0.5em' }}>
         {patient?.name}
       </Typography>
-      {patient?.gender === 'female' ? <FemaleOutlined fontSize="large" /> : <MaleOutlined fontSize="large" />}
-
-      <Typography paragraph={true}>
-        <WorkOutlineOutlinedIcon fontSize="large" /> {patient?.occupation}
-      </Typography>
-      <Typography paragraph={true}>{patient?.ssn}</Typography>
+      <List style={{ maxWidth: 340 }}>
+        <ListItem>
+          <ListItemText primary={patient?.gender} secondary="Gender" />
+          <ListItemIcon>
+            {patient?.gender === 'female' ? <FemaleOutlined fontSize="large" /> : <MaleOutlined fontSize="large" />}
+          </ListItemIcon>
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={patient?.occupation} secondary="Occupation" />
+          <ListItemIcon>
+            <WorkOutlineOutlinedIcon fontSize="large" />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem>
+          <ListItemText primary={patient?.ssn} secondary="SSN" />
+          <ListItemIcon>
+            <BadgeOutlinedIcon fontSize="large" />
+          </ListItemIcon>
+        </ListItem>
+      </List>
       <AddEntryModal modalOpen={modalOpen} onSubmit={submitNewEntry} error={error} onClose={closeModal} />
       <Button variant="contained" onClick={() => openModal()}>
         Add New Entry
