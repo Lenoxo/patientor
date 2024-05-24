@@ -56,6 +56,7 @@ export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdA
             ))}
           </List>
         </List>
+        {renderAddionalEntryInfo(entryData)}
       </Box>
     </>
   );
@@ -126,24 +127,26 @@ function OccupationalHealthcareComponent({
   sickLeave: OccupationalHealthcareEntry['sickLeave'];
 }) {
   return (
-    <ul>
-      <li>
-        <b>Employer Name: </b>
-        {employerName}
-      </li>
+    <List>
+      <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+        OccupationalHealthcare
+      </Typography>
+      <ListItem>
+        <ListItemText primary="Employer Name" secondary={employerName} />
+      </ListItem>
       {sickLeave && (
-        <ul>
-          <h4>Sick Leave</h4>
-          <li>
-            <b>start date: </b>
-            {sickLeave.startDate}
-          </li>
-          <li>
-            <b>end date: </b>
-            {sickLeave.endDate}
-          </li>
-        </ul>
+        <>
+          <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+            Sick Leave
+          </Typography>
+          <ListItem divider={true}>
+            <ListItemText primary="Start Date" secondary={sickLeave.startDate} />
+          </ListItem>
+          <ListItem divider={true}>
+            <ListItemText primary="End Date" secondary={sickLeave.endDate} />
+          </ListItem>
+        </>
       )}
-    </ul>
+    </List>
   );
 }
