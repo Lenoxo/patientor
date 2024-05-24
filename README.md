@@ -4,11 +4,13 @@ This app showcases a list of patients, allowing to create patients and for each 
 
 ## Demo video:
 
+https://github.com/Lenoxo/patientor/assets/119215089/8dc6c763-eb08-4614-a1ed-bd4969309e90
+
 ### Getting started
 
 - To get the app running follow these steps:
   1. Install its dependencies with `npm install`.
-  2. Clone and start the backend of this project with
+  2. Clone and start the backend server of this project with
   ```bash
   git clone https://github.com/Lenoxo/patientor-back.git
   cd patientor-back
