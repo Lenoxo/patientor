@@ -7,6 +7,15 @@ import {
   OccupationalHealthcareEntry
 } from '../../types';
 import diagnosesService from '../../services/diagnoses';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
+import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
+import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 
 export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdAndSpecialist }) {
   const { date, description, diagnosisCodes } = entryData;
@@ -27,20 +36,29 @@ export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdA
   }, [diagnosisCodes]);
 
   return (
-    <ul>
-      <p>
-        <b>{date}</b> {description}
-      </p>
-      <h4>Diagnoses</h4>
-      <ul>
-        {patientDiagnosisInfo.map((diagnosis, index) => (
-          <li key={index}>
-            {diagnosis.code}: {diagnosis.name}
-          </li>
-        ))}
-      </ul>
-      {renderAddionalEntryInfo(entryData)}
-    </ul>
+    <>
+      <Box component="article" sx={{ p: 2, border: '1px solid grey', borderRadius: 1, marginBottom: 4 }}>
+        <List>
+          <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+            Details
+          </Typography>
+          <ListItem>
+            <ListItemText primary={date} secondary={description} />
+          </ListItem>
+          <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+            Diagnosis
+          </Typography>
+          <List>
+            {patientDiagnosisInfo.map((diagnosis, index) => (
+              <ListItem divider={true} key={index}>
+                <ListItemText primary={diagnosis.code} secondary={diagnosis.name} />
+              </ListItem>
+            ))}
+          </List>
+        </List>
+        <List>{renderAddionalEntryInfo(entryData)}</List>
+      </Box>
+    </>
   );
 }
 
@@ -69,21 +87,36 @@ function assertNever(value: never): never {
 function HospitalComponent({ discharge }: { discharge: HospitalEntry['discharge'] }) {
   return (
     <>
-      <h4>Discharge</h4>
-      <ul>
-        <li>
-          <b>date</b> {discharge.date}
-        </li>
-        <li>
-          <b>criteria</b> {discharge.criteria}
-        </li>
-      </ul>
+      <ListItem>
+        <ListItemIcon>
+          <LocalHospitalOutlinedIcon fontSize="large" />
+        </ListItemIcon>
+        <ListItemText primary="Hospital" />
+      </ListItem>
+      <Typography paragraph style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+        Discharge
+      </Typography>
+      <ListItem>
+        <ListItemText primary={discharge.date} secondary={`Criteria: ${discharge.criteria}`} />
+      </ListItem>
     </>
   );
 }
 
 function HealthCheckComponent({ healthCheckRating }: { healthCheckRating: HealthCheckRating }) {
-  return <p>HealthCheck Rating: {healthCheckRating}</p>;
+  return (
+    <>
+      <ListItem>
+        <ListItemIcon>
+          <FactCheckOutlinedIcon fontSize="large" />
+        </ListItemIcon>
+        <ListItemText primary="HealthCheck" />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary={healthCheckRating} secondary="HealthCheck Rating" />
+      </ListItem>
+    </>
+  );
 }
 
 function OccupationalHealthcareComponent({
@@ -94,24 +127,29 @@ function OccupationalHealthcareComponent({
   sickLeave: OccupationalHealthcareEntry['sickLeave'];
 }) {
   return (
-    <ul>
-      <li>
-        <b>Employer Name: </b>
-        {employerName}
-      </li>
+    <>
+      <ListItem>
+        <ListItemIcon>
+          <WorkOutlineOutlinedIcon fontSize="large" />
+        </ListItemIcon>
+        <ListItemText primary="OccupationalHealthcare" />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="Employer Name" secondary={employerName} />
+      </ListItem>
       {sickLeave && (
-        <ul>
-          <h4>Sick Leave</h4>
-          <li>
-            <b>start date: </b>
-            {sickLeave.startDate}
-          </li>
-          <li>
-            <b>end date: </b>
-            {sickLeave.endDate}
-          </li>
-        </ul>
+        <>
+          <Typography paragraph style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+            Sick Leave
+          </Typography>
+          <ListItem divider={true}>
+            <ListItemText primary="Start Date" secondary={sickLeave.startDate} />
+          </ListItem>
+          <ListItem divider={true}>
+            <ListItemText primary="End Date" secondary={sickLeave.endDate} />
+          </ListItem>
+        </>
       )}
-    </ul>
+    </>
   );
 }
