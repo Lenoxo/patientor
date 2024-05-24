@@ -111,7 +111,7 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
         <TextField label="description" id="description" fullWidth required={true} />
         <DatePicker
           slotProps={{ textField: { fullWidth: true, label: 'Date', required: true } }}
-          format="MM - DD - YYYY"
+          format="YYYY-MM-DD"
           onChange={(newDate) => newDate && setDate(newDate)}
         />
         <TextField label="specialist" id="specialist" fullWidth required={true} />
@@ -141,7 +141,7 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
           <>
             <DatePicker
               slotProps={{ textField: { fullWidth: true, label: 'Discharge Date', required: true } }}
-              format="MM - DD - YYYY"
+              format="YYYY-MM-DD"
               onChange={(newDate) => newDate && setDischargeDate(newDate)}
             />
             <TextField label="discharge criteria" id="dischargeCriteria" fullWidth required={true} />
@@ -151,15 +151,15 @@ function AddEntryForm({ onCancel, onSubmit, availableDiagnoses }: Props) {
         {entryType === 'OccupationalHealthcare' && (
           <>
             <TextField label="employer name" id="employerName" fullWidth required={true} />
-            <InputLabel style={{ marginTop: 10 }}>Sick Leave (optional)</InputLabel>
+            <InputLabel style={{ marginTop: 10, marginBottom: 10 }}>Sick Leave (optional)</InputLabel>
             <DatePicker
               slotProps={{ textField: { fullWidth: true, label: 'Start Date' } }}
-              format="MM - DD - YYYY"
+              format="YYYY-MM-DD"
               onChange={(newDate) => newDate && setSickLeaveStartDate(newDate)}
             />
             <DatePicker
               slotProps={{ textField: { fullWidth: true, label: 'End Date' } }}
-              format="MM - DD - YYYY"
+              format="YYYY-MM-DD"
               onChange={(newDate) => newDate && setSickLeaveEndDate(newDate)}
             />
           </>

@@ -12,6 +12,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
+import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
+import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 
 export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdAndSpecialist }) {
   const { date, description, diagnosisCodes } = entryData;
@@ -83,11 +87,17 @@ function assertNever(value: never): never {
 function HospitalComponent({ discharge }: { discharge: HospitalEntry['discharge'] }) {
   return (
     <>
-      <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
-        Hospital Discharge
+      <ListItem>
+        <ListItemIcon>
+          <LocalHospitalOutlinedIcon fontSize="large" />
+        </ListItemIcon>
+        <ListItemText primary="Hospital" />
+      </ListItem>
+      <Typography paragraph style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+        Discharge
       </Typography>
       <ListItem>
-        <ListItemText primary={discharge.date} secondary={`Criteria: ${discharge.criteria}`} />;
+        <ListItemText primary={discharge.date} secondary={`Criteria: ${discharge.criteria}`} />
       </ListItem>
     </>
   );
@@ -96,11 +106,14 @@ function HospitalComponent({ discharge }: { discharge: HospitalEntry['discharge'
 function HealthCheckComponent({ healthCheckRating }: { healthCheckRating: HealthCheckRating }) {
   return (
     <>
-      <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
-        HealthCheck
-      </Typography>
       <ListItem>
-        <ListItemText primary={healthCheckRating} secondary="HealthCheck Rating" />;
+        <ListItemIcon>
+          <FactCheckOutlinedIcon fontSize="large" />
+        </ListItemIcon>
+        <ListItemText primary="HealthCheck" />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary={healthCheckRating} secondary="HealthCheck Rating" />
       </ListItem>
     </>
   );
@@ -115,15 +128,18 @@ function OccupationalHealthcareComponent({
 }) {
   return (
     <>
-      <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
-        OccupationalHealthcare
-      </Typography>
+      <ListItem>
+        <ListItemIcon>
+          <WorkOutlineOutlinedIcon fontSize="large" />
+        </ListItemIcon>
+        <ListItemText primary="OccupationalHealthcare" />
+      </ListItem>
       <ListItem>
         <ListItemText primary="Employer Name" secondary={employerName} />
       </ListItem>
       {sickLeave && (
         <>
-          <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+          <Typography paragraph style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
             Sick Leave
           </Typography>
           <ListItem divider={true}>
