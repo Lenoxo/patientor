@@ -3,9 +3,10 @@ import { NewEntry, Patient } from '../../types';
 import patientService from '../../services/patients';
 import PatientEntry from './PatientEntry';
 import AddEntryModal from '../AddEntryModal';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import axios from 'axios';
-
+import { FemaleOutlined, MaleOutlined } from '@mui/icons-material';
+import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
 export default function PatientDetail() {
   const [patient, setPatient] = useState<Patient>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -57,15 +58,22 @@ export default function PatientDetail() {
 
   return (
     <>
-      <h3>{patient?.name}</h3>
-      <p>{patient?.gender}</p>
-      <p>{patient?.occupation}</p>
-      <p>{patient?.ssn}</p>
+      <Typography variant="h5" style={{ marginTop: '0.5em' }}>
+        {patient?.name}
+      </Typography>
+      {patient?.gender === 'female' ? <FemaleOutlined fontSize="large" /> : <MaleOutlined fontSize="large" />}
+
+      <Typography paragraph={true}>
+        <WorkOutlineOutlinedIcon fontSize="large" /> {patient?.occupation}
+      </Typography>
+      <Typography paragraph={true}>{patient?.ssn}</Typography>
       <AddEntryModal modalOpen={modalOpen} onSubmit={submitNewEntry} error={error} onClose={closeModal} />
       <Button variant="contained" onClick={() => openModal()}>
         Add New Entry
       </Button>
-      <h3>entries</h3>
+      <Typography variant="h5" style={{ marginBottom: '0.5em', marginTop: '0.5em' }}>
+        Entries
+      </Typography>
       {patient?.entries.map((entry, index) => <PatientEntry key={index} entryData={entry} />)}
     </>
   );
