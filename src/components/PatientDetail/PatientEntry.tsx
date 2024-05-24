@@ -9,13 +9,9 @@ import {
 import diagnosesService from '../../services/diagnoses';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdAndSpecialist }) {
   const { date, description, diagnosisCodes } = entryData;
@@ -56,26 +52,11 @@ export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdA
             ))}
           </List>
         </List>
-        {renderAddionalEntryInfo(entryData)}
+        <List>{renderAddionalEntryInfo(entryData)}</List>
       </Box>
     </>
   );
 }
-
-// {/* <ul> */}
-// {/*   <p> */}
-// {/*     <b>{date}</b> {description} */}
-// {/*   </p> */}
-// {/*   <h4>Diagnoses</h4> */}
-// {/*   <ul> */}
-// {/*     {patientDiagnosisInfo.map((diagnosis, index) => ( */}
-// {/*       <li key={index}> */}
-// {/*         {diagnosis.code}: {diagnosis.name} */}
-// {/*       </li> */}
-// {/*     ))} */}
-// {/*   </ul> */}
-// {/*   {renderAddionalEntryInfo(entryData)} */}
-// {/* </ul> */}
 
 function renderAddionalEntryInfo(entryData: EntryWithoutIdAndSpecialist) {
   switch (entryData.type) {
@@ -102,21 +83,27 @@ function assertNever(value: never): never {
 function HospitalComponent({ discharge }: { discharge: HospitalEntry['discharge'] }) {
   return (
     <>
-      <h4>Discharge</h4>
-      <ul>
-        <li>
-          <b>date</b> {discharge.date}
-        </li>
-        <li>
-          <b>criteria</b> {discharge.criteria}
-        </li>
-      </ul>
+      <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+        Hospital Discharge
+      </Typography>
+      <ListItem>
+        <ListItemText primary={discharge.date} secondary={`Criteria: ${discharge.criteria}`} />;
+      </ListItem>
     </>
   );
 }
 
 function HealthCheckComponent({ healthCheckRating }: { healthCheckRating: HealthCheckRating }) {
-  return <p>HealthCheck Rating: {healthCheckRating}</p>;
+  return (
+    <>
+      <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+        HealthCheck
+      </Typography>
+      <ListItem>
+        <ListItemText primary={healthCheckRating} secondary="HealthCheck Rating" />;
+      </ListItem>
+    </>
+  );
 }
 
 function OccupationalHealthcareComponent({
@@ -127,7 +114,7 @@ function OccupationalHealthcareComponent({
   sickLeave: OccupationalHealthcareEntry['sickLeave'];
 }) {
   return (
-    <List>
+    <>
       <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
         OccupationalHealthcare
       </Typography>
@@ -147,6 +134,6 @@ function OccupationalHealthcareComponent({
           </ListItem>
         </>
       )}
-    </List>
+    </>
   );
 }
