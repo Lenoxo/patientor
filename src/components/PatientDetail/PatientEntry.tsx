@@ -7,6 +7,15 @@ import {
   OccupationalHealthcareEntry
 } from '../../types';
 import diagnosesService from '../../services/diagnoses';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 
 export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdAndSpecialist }) {
   const { date, description, diagnosisCodes } = entryData;
@@ -27,22 +36,45 @@ export default function PatientEntry({ entryData }: { entryData: EntryWithoutIdA
   }, [diagnosisCodes]);
 
   return (
-    <ul>
-      <p>
-        <b>{date}</b> {description}
-      </p>
-      <h4>Diagnoses</h4>
-      <ul>
-        {patientDiagnosisInfo.map((diagnosis, index) => (
-          <li key={index}>
-            {diagnosis.code}: {diagnosis.name}
-          </li>
-        ))}
-      </ul>
-      {renderAddionalEntryInfo(entryData)}
-    </ul>
+    <>
+      <Box component="article" sx={{ p: 2, border: '1px solid grey', borderRadius: 1, marginBottom: 4 }}>
+        <List>
+          <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+            Details
+          </Typography>
+          <ListItem>
+            <ListItemText primary={date} secondary={description} />
+          </ListItem>
+          <Typography variant="h6" style={{ marginBottom: '0.15em', paddingLeft: 15 }}>
+            Diagnosis
+          </Typography>
+          <List>
+            {patientDiagnosisInfo.map((diagnosis, index) => (
+              <ListItem divider={true} key={index}>
+                <ListItemText primary={diagnosis.code} secondary={diagnosis.name} />
+              </ListItem>
+            ))}
+          </List>
+        </List>
+      </Box>
+    </>
   );
 }
+
+// {/* <ul> */}
+// {/*   <p> */}
+// {/*     <b>{date}</b> {description} */}
+// {/*   </p> */}
+// {/*   <h4>Diagnoses</h4> */}
+// {/*   <ul> */}
+// {/*     {patientDiagnosisInfo.map((diagnosis, index) => ( */}
+// {/*       <li key={index}> */}
+// {/*         {diagnosis.code}: {diagnosis.name} */}
+// {/*       </li> */}
+// {/*     ))} */}
+// {/*   </ul> */}
+// {/*   {renderAddionalEntryInfo(entryData)} */}
+// {/* </ul> */}
 
 function renderAddionalEntryInfo(entryData: EntryWithoutIdAndSpecialist) {
   switch (entryData.type) {
